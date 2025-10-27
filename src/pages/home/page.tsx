@@ -1,8 +1,77 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+
+// Hook personalizado para animação de contadores
+const useCountUp = (end: number, duration: number = 2000, start: number = 0) => {
+  const [count, setCount] = useState(start);
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isVisible) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, [isVisible]);
+
+  useEffect(() => {
+    if (!isVisible) return;
+
+    let startTime: number;
+    const animate = (currentTime: number) => {
+      if (!startTime) startTime = currentTime;
+      const progress = Math.min((currentTime - startTime) / duration, 1);
+      
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+      setCount(Math.floor(start + (end - start) * easeOutQuart));
+      
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+    
+    requestAnimationFrame(animate);
+  }, [isVisible, end, duration, start]);
+
+  return { count, ref };
+};
+
+// Componente de contador animado
+const AnimatedCounter = ({ 
+  end, 
+  suffix = '', 
+  prefix = '', 
+  className = '',
+  duration = 2000 
+}: {
+  end: number;
+  suffix?: string;
+  prefix?: string;
+  className?: string;
+  duration?: number;
+}) => {
+  const { count, ref } = useCountUp(end, duration);
+  
+  return (
+    <div ref={ref} className={className}>
+      {prefix}{count}{suffix}
+    </div>
+  );
+};
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('beneficios');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // SEO: Atualizar título da página baseado na aba ativa
   useEffect(() => {
@@ -74,81 +143,152 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       {/* Header com SEO otimizado */}
-      <header className="bg-white shadow-lg" role="banner">
-        <div className="container mx-auto px-6 py-4">
+      <header className="bg-white/80 backdrop-blur-md shadow-lg sticky top-0 z-50 transition-all duration-300" role="banner">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl" aria-label="Logo ANIC">ANIC</span>
+            <div className="flex items-center space-x-2 sm:space-x-4 group">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 rounded-xl flex items-center justify-center shadow-lg transform group-hover:scale-105 transition-all duration-300 group-hover:shadow-xl">
+                <span className="text-white font-bold text-base sm:text-xl" aria-label="Logo ANIC">ANIC</span>
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-800">ANIC</h1>
-                <p className="text-sm text-gray-600">Associação Nacional de Instrumentadores Cirúrgicos</p>
+              <div className="transform group-hover:translate-x-1 transition-transform duration-300">
+                <h1 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-gray-800 to-blue-600 bg-clip-text text-transparent">ANIC</h1>
+                <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">Associação Nacional de Instrumentadores Cirúrgicos</p>
               </div>
             </div>
-            <nav className="hidden md:flex space-x-8" role="navigation" aria-label="Menu principal">
+            
+            {/* Menu desktop */}
+            <nav className="hidden md:flex space-x-2" role="navigation" aria-label="Menu principal">
               <button 
                 onClick={() => setActiveTab('beneficios')}
-                className={`px-4 py-2 rounded-lg transition-colors ${activeTab === 'beneficios' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-blue-600'}`}
+                className={`px-4 lg:px-6 py-2 lg:py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 text-sm lg:text-base ${
+                  activeTab === 'beneficios' 
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/25' 
+                    : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                }`}
                 aria-current={activeTab === 'beneficios' ? 'page' : undefined}
               >
                 Benefícios
               </button>
               <button 
                 onClick={() => setActiveTab('como-funciona')}
-                className={`px-4 py-2 rounded-lg transition-colors ${activeTab === 'como-funciona' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-blue-600'}`}
+                className={`px-4 lg:px-6 py-2 lg:py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 text-sm lg:text-base ${
+                  activeTab === 'como-funciona' 
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/25' 
+                    : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                }`}
                 aria-current={activeTab === 'como-funciona' ? 'page' : undefined}
               >
                 Como Funciona
               </button>
               <button 
                 onClick={() => setActiveTab('cadastro')}
-                className={`px-4 py-2 rounded-lg transition-colors ${activeTab === 'cadastro' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-blue-600'}`}
+                className={`px-4 lg:px-6 py-2 lg:py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 text-sm lg:text-base ${
+                  activeTab === 'cadastro' 
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/25' 
+                    : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                }`}
                 aria-current={activeTab === 'cadastro' ? 'page' : undefined}
               >
                 Cadastro
               </button>
               <button 
                 onClick={() => setActiveTab('contato')}
-                className={`px-4 py-2 rounded-lg transition-colors ${activeTab === 'contato' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-blue-600'}`}
+                className={`px-4 lg:px-6 py-2 lg:py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 text-sm lg:text-base ${
+                  activeTab === 'contato' 
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/25' 
+                    : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                }`}
                 aria-current={activeTab === 'contato' ? 'page' : undefined}
               >
                 Contato
               </button>
             </nav>
+
+            {/* Menu mobile */}
+            <div className="md:hidden">
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="p-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 active:scale-95"
+                aria-label="Abrir menu de navegação"
+                aria-expanded={mobileMenuOpen}
+              >
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
           </div>
+
+          {/* Menu mobile expandido */}
+          {mobileMenuOpen && (
+            <div className="md:hidden border-t border-gray-200 mt-3 pt-3 animate-fade-in">
+              <div className="flex flex-col space-y-2">
+                {['beneficios', 'como-funciona', 'cadastro', 'contato'].map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => {
+                      setActiveTab(tab);
+                      setMobileMenuOpen(false);
+                    }}
+                    className={`px-4 py-3 rounded-lg font-medium text-left transition-all duration-300 transform hover:scale-105 active:scale-95 ${
+                      activeTab === tab
+                        ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg'
+                        : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
+                    }`}
+                  >
+                    {tab === 'beneficios' && 'Benefícios'}
+                    {tab === 'como-funciona' && 'Como Funciona'}
+                    {tab === 'cadastro' && 'Cadastro'}
+                    {tab === 'contato' && 'Contato'}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
       {/* Hero Section com SEO otimizado */}
-      <section className="relative bg-gradient-to-r from-blue-600 to-blue-800 text-white py-20" role="banner">
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="container mx-auto px-6 relative z-10">
+      <section className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white py-16 sm:py-20 lg:py-24 overflow-hidden" role="banner">
+        {/* Elementos decorativos animados */}
+        <div className="absolute inset-0">
+          <div className="absolute top-10 left-10 w-16 h-16 sm:w-20 sm:h-20 bg-white/10 rounded-full animate-pulse"></div>
+          <div className="absolute top-32 right-20 w-12 h-12 sm:w-16 sm:h-16 bg-white/5 rounded-full animate-bounce" style={{animationDelay: '1s'}}></div>
+          <div className="absolute bottom-20 left-1/4 w-10 h-10 sm:w-12 sm:h-12 bg-white/10 rounded-full animate-pulse" style={{animationDelay: '2s'}}></div>
+          <div className="absolute bottom-32 right-1/3 w-6 h-6 sm:w-8 sm:h-8 bg-white/5 rounded-full animate-bounce" style={{animationDelay: '0.5s'}}></div>
+          <div className="absolute top-1/2 right-1/4 w-8 h-8 sm:w-10 sm:h-10 bg-white/5 rounded-full animate-pulse" style={{animationDelay: '3s'}}></div>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl font-bold mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 animate-fade-in-up leading-tight">
               Cadastro Nacional de Instrumentadores Cirúrgicos - ANIC
             </h1>
-            <h2 className="text-xl mb-8 leading-relaxed font-medium">
+            <h2 className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 leading-relaxed font-medium opacity-90 animate-fade-in-up px-4 sm:px-0" style={{animationDelay: '0.2s'}}>
               Primeira Associação Nacional dedicada exclusivamente aos profissionais de instrumentação cirúrgica. 
               Obtenha reconhecimento oficial, carteirinha profissional numerada e documentação organizada. 
               Contribua para a regulamentação e valorização da profissão no Brasil.
             </h2>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-fade-in-up px-4 sm:px-0" style={{animationDelay: '0.4s'}}>
               <button 
                 onClick={() => setActiveTab('cadastro')}
-                className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors whitespace-nowrap"
+                className="bg-white text-blue-600 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 hover:shadow-xl whitespace-nowrap group active:scale-95 text-sm sm:text-base"
                 aria-label="Fazer cadastro profissional de instrumentador cirúrgico"
               >
-                Fazer Cadastro Profissional
+                <span className="group-hover:translate-x-1 transition-transform duration-300 inline-block">
+                  Fazer Cadastro Profissional
+                </span>
               </button>
               <button 
                 onClick={() => setActiveTab('como-funciona')}
-                className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors whitespace-nowrap"
+                className="border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300 transform hover:scale-105 whitespace-nowrap group active:scale-95 text-sm sm:text-base"
                 aria-label="Saiba como funciona o cadastro"
               >
-                Como Funciona o Processo
+                <span className="group-hover:translate-x-1 transition-transform duration-300 inline-block">
+                  Como Funciona o Processo
+                </span>
               </button>
             </div>
           </div>
@@ -288,26 +428,34 @@ export default function Home() {
               </div>
             </article>
 
-            {/* Seção de estatísticas e credibilidade */}
+            {/* Seção de estatísticas e credibilidade com contadores animados */}
             <article className="bg-white p-8 rounded-xl shadow-lg">
               <div className="text-center mb-8">
                 <h3 className="text-2xl font-bold text-gray-800 mb-4">ANIC em Números</h3>
               </div>
               <div className="grid md:grid-cols-4 gap-6 text-center">
                 <div className="p-4">
-                  <div className="text-3xl font-bold text-blue-600 mb-2">1000+</div>
+                  <div className="text-3xl font-bold text-blue-600 mb-2">
+                    <AnimatedCounter end={1250} duration={2000} />+
+                  </div>
                   <p className="text-gray-600">Instrumentadores Cadastrados</p>
                 </div>
                 <div className="p-4">
-                  <div className="text-3xl font-bold text-green-600 mb-2">27</div>
+                  <div className="text-3xl font-bold text-green-600 mb-2">
+                    <AnimatedCounter end={27} duration={1800} />
+                  </div>
                   <p className="text-gray-600">Estados Atendidos</p>
                 </div>
                 <div className="p-4">
-                  <div className="text-3xl font-bold text-purple-600 mb-2">100%</div>
+                  <div className="text-3xl font-bold text-purple-600 mb-2">
+                    <AnimatedCounter end={100} duration={2200} />%
+                  </div>
                   <p className="text-gray-600">Processo Digital</p>
                 </div>
                 <div className="p-4">
-                  <div className="text-3xl font-bold text-orange-600 mb-2">15 dias</div>
+                  <div className="text-3xl font-bold text-orange-600 mb-2">
+                    <AnimatedCounter end={15} duration={1500} /> dias
+                  </div>
                   <p className="text-gray-600">Prazo Máximo de Análise</p>
                 </div>
               </div>
@@ -676,8 +824,52 @@ export default function Home() {
               </p>
             </div>
 
+            {/* Destaque do Email Principal */}
+            <div className="max-w-4xl mx-auto mb-12">
+              <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-8 rounded-2xl shadow-xl text-center">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mr-4">
+                    <i className="ri-mail-line text-3xl"></i>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold mb-2">Atendimento Profissional</h3>
+                    <p className="text-blue-100">Suporte especializado para instrumentadores cirúrgicos</p>
+                  </div>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-4">
+                  <p className="text-lg mb-2">📧 Email Principal para Dúvidas:</p>
+                  <a 
+                    href="mailto:duvidas@anic.live" 
+                    className="text-3xl font-bold text-white hover:text-blue-200 transition-colors duration-300 inline-block transform hover:scale-105"
+                  >
+                    duvidas@anic.live
+                  </a>
+                </div>
+                <div className="grid md:grid-cols-3 gap-4 text-sm">
+                  <div className="bg-white/10 rounded-lg p-3">
+                    <i className="ri-time-line text-lg mb-1 block"></i>
+                    <p className="font-semibold">Resposta em até</p>
+                    <p>48 horas úteis</p>
+                  </div>
+                  <div className="bg-white/10 rounded-lg p-3">
+                    <i className="ri-shield-check-line text-lg mb-1 block"></i>
+                    <p className="font-semibold">Atendimento</p>
+                    <p>100% Profissional</p>
+                  </div>
+                  <div className="bg-white/10 rounded-lg p-3">
+                    <i className="ri-user-heart-line text-lg mb-1 block"></i>
+                    <p className="font-semibold">Especializado</p>
+                    <p>Para Instrumentadores</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="max-w-2xl mx-auto">
               <div className="bg-white p-8 rounded-xl shadow-lg">
+                <h3 className="text-xl font-semibold text-gray-800 mb-6 text-center">
+                  Ou envie sua mensagem pelo formulário
+                </h3>
                 <form onSubmit={handleContatoSubmit} data-readdy-form className="space-y-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Nome *</label>
@@ -739,32 +931,68 @@ export default function Home() {
               </div>
 
               <div className="mt-8 space-y-6">
-                <div className="bg-blue-50 p-6 rounded-xl">
-                  <h3 className="text-xl font-semibold text-blue-800 mb-4">Informações Importantes</h3>
+                <div className="bg-blue-50 p-6 rounded-xl border border-blue-200">
+                  <h3 className="text-xl font-semibold text-blue-800 mb-4 flex items-center">
+                    <i className="ri-information-line mr-2"></i>
+                    Informações Importantes
+                  </h3>
                   <div className="space-y-3 text-blue-700">
-                    <p>• Não temos atendimento presencial ou por telefone</p>
-                    <p>• Todas as comunicações são feitas por e-mail</p>
-                    <p>• Tempo de resposta: até 48 horas úteis</p>
-                    <p>• Para dúvidas sobre documentação: documentacao@anic.live</p>
+                    <div className="flex items-start space-x-3">
+                      <i className="ri-mail-line text-blue-600 mt-1"></i>
+                      <p>Todas as comunicações são feitas exclusivamente por e-mail</p>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <i className="ri-time-line text-blue-600 mt-1"></i>
+                      <p>Tempo de resposta: até 48 horas úteis</p>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <i className="ri-shield-check-line text-blue-600 mt-1"></i>
+                      <p>Atendimento profissional especializado em instrumentação cirúrgica</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="bg-green-50 p-6 rounded-xl">
-                  <h3 className="text-xl font-semibold text-green-800 mb-4">E-mails de Contato</h3>
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-3">
-                      <i className="ri-mail-line text-green-600"></i>
-                      <div>
-                        <p className="font-semibold">Dúvidas Gerais:</p>
-                        <p className="text-green-700">duvidas@anic.live</p>
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl border border-green-200">
+                  <h3 className="text-xl font-semibold text-green-800 mb-4 flex items-center">
+                    <i className="ri-contacts-line mr-2"></i>
+                    Canais de Atendimento Especializados
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-green-100">
+                      <div className="flex items-center space-x-3 mb-2">
+                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                          <i className="ri-question-line text-green-600"></i>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-green-800">Dúvidas Gerais</p>
+                          <p className="text-sm text-green-600">Informações sobre cadastro</p>
+                        </div>
                       </div>
+                      <a 
+                        href="mailto:duvidas@anic.live" 
+                        className="text-green-700 font-semibold hover:text-green-800 transition-colors flex items-center"
+                      >
+                        <i className="ri-mail-line mr-2"></i>
+                        duvidas@anic.live
+                      </a>
                     </div>
-                    <div className="flex items-center space-x-3">
-                      <i className="ri-file-text-line text-green-600"></i>
-                      <div>
-                        <p className="font-semibold">Documentação:</p>
-                        <p className="text-green-700">cadastro@anic.live</p>
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-green-100">
+                      <div className="flex items-center space-x-3 mb-2">
+                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                          <i className="ri-file-text-line text-blue-600"></i>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-blue-800">Documentação</p>
+                          <p className="text-sm text-blue-600">Envio de documentos</p>
+                        </div>
                       </div>
+                      <a 
+                        href="mailto:cadastro@anic.live" 
+                        className="text-blue-700 font-semibold hover:text-blue-800 transition-colors flex items-center"
+                      >
+                        <i className="ri-mail-line mr-2"></i>
+                        cadastro@anic.live
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -810,12 +1038,26 @@ export default function Home() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Contato Profissional</h4>
-              <div className="space-y-2 text-sm text-gray-400">
-                <p><strong>Dúvidas:</strong> duvidas@anic.live</p>
-                <p><strong>Cadastro:</strong> cadastro@anic.live</p>
-                <p><strong>Documentação:</strong> documentacao@anic.live</p>
-                <p>Atendimento exclusivo por e-mail</p>
+              <h4 className="font-semibold mb-4 flex items-center">
+                <i className="ri-customer-service-2-line mr-2"></i>
+                Contato Profissional
+              </h4>
+              <div className="space-y-3 text-sm">
+                <div className="bg-gray-700 p-3 rounded-lg">
+                  <p className="text-gray-300 mb-1">📧 Dúvidas Gerais:</p>
+                  <a 
+                    href="mailto:duvidas@anic.live" 
+                    className="text-white font-semibold hover:text-blue-300 transition-colors"
+                  >
+                    duvidas@anic.live
+                  </a>
+                </div>
+                <div className="space-y-2 text-gray-400">
+                  <p><strong className="text-gray-300">Cadastro:</strong> cadastro@anic.live</p>
+                  <p><strong className="text-gray-300">Documentação:</strong> documentacao@anic.live</p>
+                  <p className="text-xs">✉️ Atendimento exclusivo por e-mail</p>
+                  <p className="text-xs">⏱️ Resposta em até 48h úteis</p>
+                </div>
               </div>
             </div>
 
