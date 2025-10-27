@@ -202,7 +202,7 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="text-sm text-gray-500 mt-4">
-                  Carteirinha plastificada com numeração única nacional, foto 3x4, dados profissionais e QR Code de verificação
+                  Carteirinha plastificada com numeração única nacional, foto 3x4 e dados profissionais
                 </p>
               </div>
             </article>
