@@ -804,7 +804,7 @@ export default function Home() {
                   Após preencher a ficha cadastral, envie toda a documentação para:
                 </p>
                 <div className="bg-white p-4 rounded-lg">
-                  <p className="font-semibold text-blue-800">cadastro@anic.live</p>
+                  <p className="font-semibold text-blue-800">duvidas@anic.live</p>
                 </div>
                 <p className="text-sm text-blue-600 mt-3">
                   A aprovação da documentação dura em média 15 dias. Após aprovada, você receberá um e-mail com as informações para pagamento.
@@ -957,15 +957,15 @@ export default function Home() {
                     <i className="ri-contacts-line mr-2"></i>
                     Canais de Atendimento Especializados
                   </h3>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="bg-white p-4 rounded-lg shadow-sm border border-green-100">
+                  <div className="grid md:grid-cols-1 gap-4 justify-center">
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-green-100 max-w-md mx-auto">
                       <div className="flex items-center space-x-3 mb-2">
                         <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
                           <i className="ri-question-line text-green-600"></i>
                         </div>
                         <div>
-                          <p className="font-semibold text-green-800">Dúvidas Gerais</p>
-                          <p className="text-sm text-green-600">Informações sobre cadastro</p>
+                          <p className="font-semibold text-green-800">Atendimento Geral</p>
+                          <p className="text-sm text-green-600">Dúvidas, cadastro e documentação</p>
                         </div>
                       </div>
                       <a 
@@ -974,24 +974,6 @@ export default function Home() {
                       >
                         <i className="ri-mail-line mr-2"></i>
                         duvidas@anic.live
-                      </a>
-                    </div>
-                    <div className="bg-white p-4 rounded-lg shadow-sm border border-green-100">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                          <i className="ri-file-text-line text-blue-600"></i>
-                        </div>
-                        <div>
-                          <p className="font-semibold text-blue-800">Documentação</p>
-                          <p className="text-sm text-blue-600">Envio de documentos</p>
-                        </div>
-                      </div>
-                      <a 
-                        href="mailto:cadastro@anic.live" 
-                        className="text-blue-700 font-semibold hover:text-blue-800 transition-colors flex items-center"
-                      >
-                        <i className="ri-mail-line mr-2"></i>
-                        cadastro@anic.live
                       </a>
                     </div>
                   </div>
@@ -1053,10 +1035,9 @@ export default function Home() {
                   </a>
                 </div>
                 <div className="space-y-2 text-gray-400">
-                  <p><strong className="text-gray-300">Cadastro:</strong> cadastro@anic.live</p>
-                  <p><strong className="text-gray-300">Documentação:</strong> documentacao@anic.live</p>
                   <p className="text-xs">✉️ Atendimento exclusivo por e-mail</p>
                   <p className="text-xs">⏱️ Resposta em até 48h úteis</p>
+                  <p className="text-xs">📋 Dúvidas, cadastro e documentação</p>
                 </div>
               </div>
             </div>
