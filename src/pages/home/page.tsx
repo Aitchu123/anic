@@ -94,7 +94,7 @@ export default function Home() {
     }
 
     try {
-      const response = await fetch('https://readdy.ai/api/form/d3vnrv4um42jkjthsl6g', {
+      const response = await fetch('/api/form/cadastro', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -123,7 +123,7 @@ export default function Home() {
     }
 
     try {
-      const response = await fetch('https://readdy.ai/api/form/d3vncbnlh2s7bsogu81g', {
+      const response = await fetch('/api/form/contato', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
