@@ -334,10 +334,11 @@ export default function Home() {
                 <div className="flex justify-center">
                   <div className="bg-white p-4 rounded-xl shadow-lg max-w-md">
                     <img 
-                      src="https://static.readdy.ai/image/0e5b39016bc5f2c093060177f0429e20/8924083f1f2960b76f7d0018a1fff5aa.jpeg"
+                      src="/carteirinha-anic-nova.jpg"
                       alt="Carteirinha profissional oficial ANIC para instrumentadores cirúrgicos - modelo com foto, dados pessoais e numeração única nacional"
                       className="w-full h-auto rounded-lg shadow-md"
                       loading="lazy"
+                      onError={(e) => { e.currentTarget.src = 'https://static.readdy.ai/image/0e5b39016bc5f2c093060177f0429e20/8924083f1f2960b76f7d0018a1fff5aa.jpeg'; }}
                     />
                   </div>
                 </div>
