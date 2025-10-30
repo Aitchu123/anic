@@ -339,7 +339,7 @@ export default function Home() {
                 <div className="flex justify-center">
                   <div className="bg-white p-4 rounded-xl shadow-lg max-w-md">
                     <img 
-                      src="https://drive.google.com/uc?export=view&id=1PYRYbMgMVeKQip8EXudcUg3RdAvQdzQm"
+                      src="https://drive.google.com/file/d/1PYRYbMgMVeKQip8EXudcUg3RdAvQdzQm/view?usp=sharing"
                       alt="Carteirinha profissional oficial ANIC para instrumentadores cirúrgicos - modelo com foto, dados pessoais e numeração única nacional"
                       className="w-full h-auto rounded-lg shadow-md"
                       loading="lazy"
