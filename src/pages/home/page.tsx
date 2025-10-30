@@ -84,6 +84,11 @@ export default function Home() {
     document.title = titles[activeTab as keyof typeof titles] || 'ANIC - Cadastro Nacional de Instrumentadores Cirúrgicos';
   }, [activeTab]);
 
+  // Base da API para ambiente local: se estiver em localhost e não na porta 3737, direciona para o backend
+  const apiBase = (typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') &&
+    window.location.port !== '3737') ? 'http://localhost:3737' : '';
+
   const handleCadastroSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -94,7 +99,7 @@ export default function Home() {
     }
 
     try {
-      const response = await fetch('/api/form/cadastro', {
+      const response = await fetch(`${apiBase}/api/form/cadastro`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -123,7 +128,7 @@ export default function Home() {
     }
 
     try {
-      const response = await fetch('/api/form/contato', {
+      const response = await fetch(`${apiBase}/api/form/contato`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -334,7 +339,7 @@ export default function Home() {
                 <div className="flex justify-center">
                   <div className="bg-white p-4 rounded-xl shadow-lg max-w-md">
                     <img 
-                      src="/carteirinha-anic-nova.jpg"
+                      src="https://drive.google.com/uc?export=view&id=1PYRYbMgMVeKQip8EXudcUg3RdAvQdzQm"
                       alt="Carteirinha profissional oficial ANIC para instrumentadores cirúrgicos - modelo com foto, dados pessoais e numeração única nacional"
                       className="w-full h-auto rounded-lg shadow-md"
                       loading="lazy"
