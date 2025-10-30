@@ -159,7 +159,7 @@ export default function Home() {
               </div>
               <div className="transform group-hover:translate-x-1 transition-transform duration-300">
                 <h1 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-gray-800 to-blue-600 bg-clip-text text-transparent">ANIC</h1>
-                <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">Associação Nacional de Instrumentadores Cirúrgicos</p>
+                <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">Agência Nacional de Instrumentadores Cirùrgicos</p>
               </div>
             </div>
             
@@ -1062,7 +1062,7 @@ export default function Home() {
           <div className="border-t border-gray-700 mt-8 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <p className="text-gray-400 text-sm mb-4 md:mb-0">
-                © 2024 ANIC - Associação Nacional de Instrumentadores Cirúrgicos. Todos os direitos reservados.
+                © 2024 ANIC - Agência Nacional de Instrumentadores Cirùrgicos. Todos os direitos reservados.
               </p>
             </div>
           </div>
