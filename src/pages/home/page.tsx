@@ -272,7 +272,7 @@ export default function Home() {
               Cadastro Nacional de Instrumentadores Cirúrgicos - ANIC
             </h1>
             <h2 className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 leading-relaxed font-medium opacity-90 animate-fade-in-up px-4 sm:px-0" style={{animationDelay: '0.2s'}}>
-              Primeira Associação Nacional dedicada exclusivamente aos profissionais de instrumentação cirúrgica. 
+              Primeira Agência Nacional dedicada exclusivamente aos profissionais de instrumentação cirúrgica. 
               Obtenha reconhecimento oficial, carteirinha profissional numerada e documentação organizada. 
               Contribua para a regulamentação e valorização da profissão no Brasil.
             </h2>
@@ -397,7 +397,7 @@ export default function Home() {
                   <div className="space-y-3">
                     <div className="flex items-center space-x-3">
                       <i className="ri-check-line text-green-600 text-xl" aria-hidden="true"></i>
-                      <span><strong>Primeira associação nacional</strong> exclusiva para instrumentadores</span>
+                      <span><strong>Primeira agência nacional</strong> exclusiva para instrumentadores</span>
                     </div>
                     <div className="flex items-center space-x-3">
                       <i className="ri-check-line text-green-600 text-xl" aria-hidden="true"></i>
@@ -1001,11 +1001,11 @@ export default function Home() {
                 </div>
                 <div>
                   <h3 className="font-bold">ANIC</h3>
-                  <p className="text-sm text-gray-400">Associação Nacional</p>
+                  <p className="text-sm text-gray-400">Agência Nacional</p>
                 </div>
               </div>
               <p className="text-gray-400 text-sm">
-                Primeira associação nacional dedicada exclusivamente aos instrumentadores cirúrgicos do Brasil. 
+                Primeira agência nacional dedicada exclusivamente aos instrumentadores cirúrgicos do Brasil. 
                 Organizando, documentando e valorizando a profissão em todo território nacional.
               </p>
             </div>
