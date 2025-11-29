@@ -4,6 +4,7 @@ import cors from 'cors';
 import nodemailer from 'nodemailer';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import https from 'https'; // <- adicionado
 
 const app = express();
 const PORT = process.env.PORT || 3737;
