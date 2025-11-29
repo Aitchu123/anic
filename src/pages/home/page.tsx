@@ -268,9 +268,6 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 animate-fade-in-up leading-tight">
-              Cadastro Nacional de Instrumentadores Cirúrgicos - ANIC
-            </h1>
             <h2 className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 leading-relaxed font-medium opacity-90 animate-fade-in-up px-4 sm:px-0" style={{animationDelay: '0.2s'}}>
               Primeira Agência Nacional dedicada exclusivamente aos profissionais de instrumentação cirúrgica. 
               Obtenha reconhecimento oficial, carteirinha profissional numerada e documentação organizada. 
@@ -321,7 +318,7 @@ export default function Home() {
           <section className="space-y-12" aria-labelledby="beneficios-title">
             <div className="text-center">
               <h2 id="beneficios-title" className="text-4xl font-bold text-gray-800 mb-6">
-                Vantagens Exclusivas do Cadastro Nacional ANIC
+                Vantagens Exclusivas da Agência Nacional ANIC
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                 Descubra por que mais de 1.000 instrumentadores cirúrgicos já escolheram a ANIC para seu reconhecimento profissional
@@ -339,7 +336,7 @@ export default function Home() {
                 <div className="flex justify-center">
                   <div className="bg-white p-4 rounded-xl shadow-lg max-w-md">
                     <img 
-                      src="/carteirinha-anic-nova.jpg"
+                      src="https://drive.google.com/uc?export=view&id=1gUNBRXGomvOSBwvLyDD0hS2swyVjoS-J"
                       alt="Carteirinha profissional oficial ANIC para instrumentadores cirúrgicos - modelo com foto, dados pessoais e numeração única nacional"
                       className="w-full h-auto rounded-lg shadow-md"
                       loading="lazy"
