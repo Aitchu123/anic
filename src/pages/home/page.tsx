@@ -333,16 +333,7 @@ export default function Home() {
                   Modelo oficial da carteirinha de instrumentador cirúrgico cadastrado nacionalmente - 
                   Documento reconhecido em todo território brasileiro
                 </p>
-                <div className="flex justify-center">
-                  <div className="bg-white p-4 rounded-xl shadow-lg max-w-md">
-                    <img 
-                      src="/carteirinha-anic.jpg"
-                      alt="Carteirinha profissional oficial ANIC para instrumentadores cirúrgicos - modelo com foto, dados pessoais e numeração única nacional"
-                      className="w-full h-auto rounded-lg shadow-md"
-                      loading="lazy"
-                    />
-                  </div>
-                </div>
+                {/* Imagem removida conforme solicitação */}
                 <p className="text-sm text-gray-500 mt-4">
                   Carteirinha plastificada com numeração única nacional, foto 3x4 e dados profissionais
                 </p>
@@ -606,211 +597,26 @@ export default function Home() {
         {activeTab === 'cadastro' && (
           <section className="space-y-12">
             <div className="text-center">
-              <h2 className="text-4xl font-bold text-gray-800 mb-6">Faça seu Cadastro</h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Preencha a ficha cadastral para iniciar seu processo de cadastro profissional
-              </p>
+              <h2 className="text-4xl font-bold text-gray-800 mb-6">Cadastro pelo WhatsApp</h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">Para realizar seu cadastro, fale conosco diretamente pelo WhatsApp.</p>
             </div>
 
-            <div className="max-w-4xl mx-auto">
-              <div className="bg-white p-8 rounded-xl shadow-lg">
-                <form onSubmit={handleCadastroSubmit} data-readdy-form className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Nome Completo *</label>
-                      <input 
-                        type="text" 
-                        name="nome_completo"
-                        required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="Digite seu nome completo"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">CPF *</label>
-                      <input 
-                        type="text" 
-                        name="cpf"
-                        required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="000.000.000-00"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">RG *</label>
-                      <input 
-                        type="text" 
-                        name="rg"
-                        required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="Digite seu RG"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Data de Nascimento *</label>
-                      <input 
-                        type="date" 
-                        name="data_nascimento"
-                        required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">E-mail *</label>
-                      <input 
-                        type="email" 
-                        name="email"
-                        required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="seu@email.com"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Telefone *</label>
-                      <input 
-                        type="tel" 
-                        name="telefone"
-                        required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="(00) 00000-0000"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Endereço Completo *</label>
-                    <input 
-                      type="text" 
-                      name="endereco"
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Rua, número, bairro, cidade, estado, CEP"
-                    />
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Estado *</label>
-                      <select 
-                        name="estado"
-                        required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-8"
-                      >
-                        <option value="">Selecione seu estado</option>
-                        <option value="AC">Acre</option>
-                        <option value="AL">Alagoas</option>
-                        <option value="AP">Amapá</option>
-                        <option value="AM">Amazonas</option>
-                        <option value="BA">Bahia</option>
-                        <option value="CE">Ceará</option>
-                        <option value="DF">Distrito Federal</option>
-                        <option value="ES">Espírito Santo</option>
-                        <option value="GO">Goiás</option>
-                        <option value="MA">Maranhão</option>
-                        <option value="MT">Mato Grosso</option>
-                        <option value="MS">Mato Grosso do Sul</option>
-                        <option value="MG">Minas Gerais</option>
-                        <option value="PA">Pará</option>
-                        <option value="PB">Paraíba</option>
-                        <option value="PR">Paraná</option>
-                        <option value="PE">Pernambuco</option>
-                        <option value="PI">Piauí</option>
-                        <option value="RJ">Rio de Janeiro</option>
-                        <option value="RN">Rio Grande do Norte</option>
-                        <option value="RS">Rio Grande do Sul</option>
-                        <option value="RO">Rondônia</option>
-                        <option value="RR">Roraima</option>
-                        <option value="SC">Santa Catarina</option>
-                        <option value="SP">São Paulo</option>
-                        <option value="SE">Sergipe</option>
-                        <option value="TO">Tocantins</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Instituição de Formação *</label>
-                      <input 
-                        type="text" 
-                        name="instituicao_formacao"
-                        required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="Nome da instituição onde se formou"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Ano de Conclusão *</label>
-                      <input 
-                        type="number" 
-                        name="ano_conclusao"
-                        required
-                        min="1980"
-                        max="2024"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="2024"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Tempo de Experiência</label>
-                      <select 
-                        name="tempo_experiencia"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-8"
-                      >
-                        <option value="">Selecione</option>
-                        <option value="menos-1-ano">Menos de 1 ano</option>
-                        <option value="1-3-anos">1 a 3 anos</option>
-                        <option value="3-5-anos">3 a 5 anos</option>
-                        <option value="5-10-anos">5 a 10 anos</option>
-                        <option value="mais-10-anos">Mais de 10 anos</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Observações</label>
-                    <textarea 
-                      name="observacoes"
-                      rows={4}
-                      maxLength={500}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                      placeholder="Informações adicionais (máximo 500 caracteres)"
-                    ></textarea>
-                  </div>
-
-                  <div className="bg-yellow-50 p-4 rounded-lg">
-                    <h4 className="font-semibold text-yellow-800 mb-2">Próximos Passos:</h4>
-                    <p className="text-sm text-yellow-700">
-                      Após enviar esta ficha, você receberá um e-mail com instruções para envio da documentação necessária.
-                    </p>
-                  </div>
-
-                  <button 
-                    type="submit"
-                    className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors whitespace-nowrap"
+            <div className="max-w-2xl mx-auto">
+              <div className="bg-white p-8 rounded-xl shadow-lg text-center">
+                <p className="text-lg text-gray-700">Para realizar seu cadastro, entre em contato pelo WhatsApp.</p>
+                <div className="mt-6">
+                  <a
+                    href="https://wa.me/556198651825?text=Quero%20fazer%20a%20carteirinha%20de%20instrumentador%20da%20ANIC"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-6 py-4 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-md"
+                    aria-label="Entrar em contato pelo WhatsApp"
                   >
-                    Enviar Ficha Cadastral
-                  </button>
-                </form>
-              </div>
-
-              <div className="mt-8 bg-blue-50 p-6 rounded-xl">
-                <h3 className="text-xl font-semibold text-blue-800 mb-4">Envio de Documentação</h3>
-                <p className="text-blue-700 mb-4">
-                  Após preencher a ficha cadastral, envie toda a documentação para:
-                </p>
-                <div className="bg-white p-4 rounded-lg">
-                  <p className="font-semibold text-blue-800">duvidas@anic.live</p>
+                    <i className="ri-whatsapp-line text-2xl mr-2"></i>
+                    Falar no WhatsApp
+                  </a>
                 </div>
-                <p className="text-sm text-blue-600 mt-3">
-                  A aprovação da documentação dura em média 15 dias. Após aprovada, você receberá um e-mail com as informações para pagamento.
-                </p>
+                <p className="text-sm text-gray-500 mt-4">Atendimento em horário comercial.</p>
               </div>
             </div>
           </section>
