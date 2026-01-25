@@ -42,4 +42,4 @@ npm run preview
 - `vite.config.ts`: saída em `out/` e suporte a `BASE_PATH`.
 
 ---
-*Atualizado em: 25/01/2026 - Trigger de Deploy*
+*Atualizado em: 25/01/2026 - Trigger de Deploy - Tentativa 2*
