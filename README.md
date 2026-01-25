@@ -40,3 +40,6 @@ npm run preview
 - `nginx.conf`: fallback de SPA.
 - `.dockerignore`: otimizações de build.
 - `vite.config.ts`: saída em `out/` e suporte a `BASE_PATH`.
+
+---
+*Atualizado em: 25/01/2026 - Trigger de Deploy*
