@@ -1,0 +1,8 @@
+# Ignore build outputs and dependencies
+out/
+node_modules/
+dist/
+
+# Misc
+.DS_Store
+Thumbs.db
