@@ -1,7 +1,6 @@
 import { startTransition, useEffect, useState, type ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  BRAZILIAN_STATES,
   EMPTY_REGISTRATION_CUSTOMER,
   REGISTRATION_AMOUNT_CENTS,
   REGISTRATION_PRODUCT_NAME,
@@ -10,7 +9,6 @@ import {
   createRegistrationOrder,
   formatCpf,
   formatCurrencyFromCents,
-  formatDisplayDate,
   formatDisplayDateTime,
   formatPhone,
   getRegistrationOrder,
@@ -32,7 +30,7 @@ type ProfessionalRegistrationFlowProps = {
 };
 
 type FieldErrors = Partial<Record<keyof RegistrationCustomer, string>>;
-type FormStep = 1 | 2 | 3;
+type FormStep = 1 | 2;
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -44,11 +42,6 @@ const STEP_LABELS: Array<{ step: FormStep; title: string; description: string }>
   },
   {
     step: 2,
-    title: 'Dados complementares',
-    description: 'Complete as informacoes do cadastro para agilizar a analise da equipe.',
-  },
-  {
-    step: 3,
     title: 'Revisao e pagamento',
     description: 'Confira seus dados antes de gerar o Pix da taxa unica da ANCI.',
   },
@@ -59,17 +52,6 @@ const ESSENTIAL_FIELDS: Array<keyof RegistrationCustomer> = [
   'cpf',
   'email',
   'telefone',
-];
-
-const COMPLEMENTARY_FIELDS: Array<keyof RegistrationCustomer> = [
-  'rg',
-  'data_nascimento',
-  'endereco',
-  'estado',
-  'instituicao_formacao',
-  'ano_conclusao',
-  'tempo_experiencia',
-  'observacoes',
 ];
 
 function getStatusClasses(status: RegistrationOrderStatus) {
@@ -101,20 +83,19 @@ function mapValidationIssues(details: ValidationIssue[]) {
 }
 
 function getFirstStepFromErrors(errors: FieldErrors) {
-  const firstErrorField = ESSENTIAL_FIELDS.find((field) => errors[field])
-    || COMPLEMENTARY_FIELDS.find((field) => errors[field]);
+  const firstErrorField = ESSENTIAL_FIELDS.find((field) => errors[field]);
 
   if (!firstErrorField) {
     return 1 as FormStep;
   }
 
-  return ESSENTIAL_FIELDS.includes(firstErrorField) ? 1 : 2;
+  return 1;
 }
 
 function validateStep(step: FormStep, customer: RegistrationCustomer) {
   const errors: FieldErrors = {};
 
-  if (step === 1 || step === 3) {
+  if (step === 1 || step === 2) {
     if (customer.nome_completo.trim().length < 3) {
       errors.nome_completo = 'Informe seu nome completo.';
     }
@@ -129,16 +110,6 @@ function validateStep(step: FormStep, customer: RegistrationCustomer) {
 
     if (normalizePhoneDigits(customer.telefone).length < 10) {
       errors.telefone = 'Informe um telefone ou WhatsApp valido.';
-    }
-  }
-
-  if (step === 2 || step === 3) {
-    if (customer.ano_conclusao && !/^\d{4}$/.test(customer.ano_conclusao.trim())) {
-      errors.ano_conclusao = 'Use o ano com 4 digitos.';
-    }
-
-    if (customer.data_nascimento && Number.isNaN(new Date(customer.data_nascimento).getTime())) {
-      errors.data_nascimento = 'Informe uma data valida.';
     }
   }
 
@@ -169,10 +140,6 @@ function getFieldValue(customer: RegistrationCustomer, field: keyof Registration
 
   if (!value) {
     return 'Nao informado';
-  }
-
-  if (field === 'data_nascimento') {
-    return formatDisplayDate(value);
   }
 
   return value;
@@ -233,7 +200,7 @@ export default function ProfessionalRegistrationFlow({
     let active = true;
 
     async function loadOrder() {
-      setStep(3);
+      setStep(2);
       setLookupError('');
       setLookupMissing(false);
       setIsLoadingOrder(true);
@@ -402,7 +369,7 @@ export default function ProfessionalRegistrationFlow({
     }
 
     setFieldErrors({});
-    setStep((current) => (current === 3 ? current : ((current + 1) as FormStep)));
+    setStep((current) => (current === 2 ? current : 2));
   }
 
   function goToPreviousStep() {
@@ -411,10 +378,7 @@ export default function ProfessionalRegistrationFlow({
   }
 
   async function handleCreatePix() {
-    const nextErrors = {
-      ...validateStep(1, customer),
-      ...validateStep(2, customer),
-    };
+    const nextErrors = validateStep(1, customer);
 
     if (Object.keys(nextErrors).length > 0) {
       setFieldErrors(nextErrors);
@@ -550,8 +514,8 @@ export default function ProfessionalRegistrationFlow({
       return null;
     }
 
-    const buttonLabel = step === 3 ? 'Gerar pagamento via Pix' : 'Continuar cadastro';
-    const buttonAction = step === 3 ? handleCreatePix : goToNextStep;
+    const buttonLabel = step === 2 ? 'Gerar pagamento via Pix' : 'Continuar cadastro';
+    const buttonAction = step === 2 ? handleCreatePix : goToNextStep;
     const isBusy = isCreatingPix;
 
     return (
@@ -646,115 +610,6 @@ export default function ProfessionalRegistrationFlow({
     );
   }
 
-  function renderStepTwo() {
-    return (
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div>
-          <label className="block text-sm font-semibold text-slate-700">RG</label>
-          <input
-            type="text"
-            value={customer.rg}
-            onChange={handleInputChange('rg')}
-            className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-            placeholder="Numero do RG"
-          />
-          {renderFieldError('rg')}
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-slate-700">Data de nascimento</label>
-          <input
-            type="date"
-            value={customer.data_nascimento}
-            onChange={handleInputChange('data_nascimento')}
-            className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-          />
-          {renderFieldError('data_nascimento')}
-        </div>
-
-        <div className="sm:col-span-2">
-          <label className="block text-sm font-semibold text-slate-700">Endereco</label>
-          <input
-            type="text"
-            value={customer.endereco}
-            onChange={handleInputChange('endereco')}
-            autoComplete="street-address"
-            className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-            placeholder="Rua, numero, bairro e complemento"
-          />
-          {renderFieldError('endereco')}
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-slate-700">Estado</label>
-          <select
-            value={customer.estado}
-            onChange={handleInputChange('estado')}
-            className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-          >
-            <option value="">Selecione</option>
-            {BRAZILIAN_STATES.map((state) => (
-              <option key={state} value={state}>
-                {state}
-              </option>
-            ))}
-          </select>
-          {renderFieldError('estado')}
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-slate-700">Ano de conclusao</label>
-          <input
-            type="text"
-            value={customer.ano_conclusao}
-            onChange={handleInputChange('ano_conclusao')}
-            inputMode="numeric"
-            className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-            placeholder="2024"
-          />
-          {renderFieldError('ano_conclusao')}
-        </div>
-
-        <div className="sm:col-span-2">
-          <label className="block text-sm font-semibold text-slate-700">Instituicao de formacao</label>
-          <input
-            type="text"
-            value={customer.instituicao_formacao}
-            onChange={handleInputChange('instituicao_formacao')}
-            className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-            placeholder="Nome da instituicao"
-          />
-          {renderFieldError('instituicao_formacao')}
-        </div>
-
-        <div className="sm:col-span-2">
-          <label className="block text-sm font-semibold text-slate-700">Tempo de experiencia</label>
-          <input
-            type="text"
-            value={customer.tempo_experiencia}
-            onChange={handleInputChange('tempo_experiencia')}
-            className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-            placeholder="Ex.: 2 anos em centro cirurgico"
-          />
-          {renderFieldError('tempo_experiencia')}
-        </div>
-
-        <div className="sm:col-span-2">
-          <label className="block text-sm font-semibold text-slate-700">Observacoes</label>
-          <textarea
-            value={customer.observacoes}
-            onChange={handleInputChange('observacoes')}
-            rows={4}
-            maxLength={2000}
-            className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-            placeholder="Se quiser, informe detalhes adicionais sobre sua atuacao"
-          />
-          {renderFieldError('observacoes')}
-        </div>
-      </div>
-    );
-  }
-
   function renderReviewStep() {
     return (
       <div className="space-y-6">
@@ -770,14 +625,6 @@ export default function ProfessionalRegistrationFlow({
           <SummaryItem label="CPF" value={getFieldValue(customer, 'cpf')} />
           <SummaryItem label="E-mail" value={getFieldValue(customer, 'email')} />
           <SummaryItem label="WhatsApp" value={getFieldValue(customer, 'telefone')} />
-          <SummaryItem label="RG" value={getFieldValue(customer, 'rg')} />
-          <SummaryItem label="Data de nascimento" value={getFieldValue(customer, 'data_nascimento')} />
-          <SummaryItem label="Endereco" value={getFieldValue(customer, 'endereco')} />
-          <SummaryItem label="Estado" value={getFieldValue(customer, 'estado')} />
-          <SummaryItem label="Instituicao" value={getFieldValue(customer, 'instituicao_formacao')} />
-          <SummaryItem label="Ano de conclusao" value={getFieldValue(customer, 'ano_conclusao')} />
-          <SummaryItem label="Experiencia" value={getFieldValue(customer, 'tempo_experiencia')} />
-          <SummaryItem label="Observacoes" value={getFieldValue(customer, 'observacoes')} />
         </dl>
       </div>
     );
@@ -1012,8 +859,7 @@ export default function ProfessionalRegistrationFlow({
 
               <div className="mt-8 space-y-6">
                 {step === 1 ? renderStepOne() : null}
-                {step === 2 ? renderStepTwo() : null}
-                {step === 3 ? renderReviewStep() : null}
+                {step === 2 ? renderReviewStep() : null}
               </div>
 
               {formError ? (
