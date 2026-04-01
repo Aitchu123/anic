@@ -286,29 +286,51 @@ export default function Home() {
         {/* Benefícios */}
         {activeTab === 'beneficios' && (
           <section className="space-y-12" aria-labelledby="beneficios-title">
-            <div className="text-center">
-              <h2 id="beneficios-title" className="text-4xl font-bold text-gray-800 mb-6">
-                Vantagens Exclusivas da Agência Nacional ANCI
-              </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Descubra por que mais de 1.000 instrumentadores cirúrgicos já escolheram a ANCI para seu reconhecimento profissional
-              </p>
-            </div>
-
-            {/* Modelo da Carteirinha com SEO otimizado */}
-            <article className="bg-gradient-to-r from-blue-50 to-indigo-50 p-8 rounded-xl">
               <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold text-gray-800 mb-4">Carteirinha Profissional Oficial ANCI</h3>
-                <p className="text-gray-600 mb-6">
-                  Modelo oficial da carteirinha de instrumentador cirúrgico cadastrado nacionalmente - 
-                  Documento reconhecido em todo território brasileiro
+                <h2 id="beneficios-title" className="text-4xl font-bold text-gray-800 mb-6">
+                  Vantagens Exclusivas da Agência Nacional ANCI
+                </h2>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-10">
+                  Descubra por que mais de 1.000 instrumentadores cirúrgicos já escolheram a ANCI para seu reconhecimento profissional
                 </p>
-                {/* Imagem removida conforme solicitação */}
-                <p className="text-sm text-gray-500 mt-4">
-                  Carteirinha plastificada com numeração única nacional, foto 3x4 e dados profissionais
-                </p>
+
+                {/* Seção das Carteirinhas */}
+                <div className="bg-white p-8 rounded-2xl shadow-xl border border-blue-100 max-w-5xl mx-auto mb-16">
+                  <h3 className="text-2xl font-bold text-blue-800 mb-2">Modelo da Nossa Carteirinha</h3>
+                  <p className="text-gray-600 mb-8 italic">Uma demonstração de como é o documento oficial do instrumentador cadastrado</p>
+                  
+                  <div className="grid md:grid-cols-2 gap-8 items-center justify-center">
+                    <div className="space-y-4 transform hover:scale-105 transition-transform duration-500">
+                      <div className="bg-gradient-to-br from-gray-100 to-gray-200 p-2 rounded-xl shadow-inner">
+                        <img 
+                          src="https://lh3.googleusercontent.com/u/0/d/1qte0bDRz_g20Hp_14f3nnL9jeBy42niG=w1000" 
+                          alt="Frente da Carteirinha ANCI" 
+                          className="w-full h-auto rounded-lg shadow-2xl"
+                        />
+                      </div>
+                      <p className="text-sm font-semibold text-blue-600 uppercase tracking-wider">Frente do Documento</p>
+                    </div>
+                    
+                    <div className="space-y-4 transform hover:scale-105 transition-transform duration-500">
+                      <div className="bg-gradient-to-br from-gray-100 to-gray-200 p-2 rounded-xl shadow-inner">
+                        <img 
+                          src="https://lh3.googleusercontent.com/u/0/d/1QZvn5IOwG7EPUkHy-bRW3QGruhqZPUQI=w1000" 
+                          alt="Verso da Carteirinha ANCI" 
+                          className="w-full h-auto rounded-lg shadow-2xl"
+                        />
+                      </div>
+                      <p className="text-sm font-semibold text-blue-600 uppercase tracking-wider">Verso do Documento</p>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-10 p-4 bg-blue-50 rounded-xl border border-blue-100 inline-block">
+                    <p className="text-blue-800 text-sm flex items-center justify-center">
+                      <i className="ri-shield-check-line mr-2 text-xl"></i>
+                      Documento oficial plastificado com numeração única nacional e validação digital via QR Code.
+                    </p>
+                  </div>
+                </div>
               </div>
-            </article>
 
             {/* Benefícios detalhados com palavras-chave SEO */}
             <div className="grid md:grid-cols-3 gap-8">
