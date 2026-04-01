@@ -1,9 +1,9 @@
 // Simple Express server to handle form submissions and send email to duvidas@anci.live
 import express from 'express';
 import cors from 'cors';
+import fs from 'node:fs';
 import nodemailer from 'nodemailer';
 import path from 'path';
-import { loadEnvFile } from 'node:process';
 import { fileURLToPath } from 'url';
 import {
   CHECKOUT_STATUS,
@@ -15,7 +15,46 @@ import {
 import { createInMemoryOrderRepository } from './server/checkout/order-repository.js';
 import { createTurboFyClient, TurboFyClientError } from './server/checkout/turbofy-client.js';
 
-loadEnvFile();
+function loadEnvFromFile() {
+  const envPath = path.resolve(process.cwd(), '.env');
+
+  if (!fs.existsSync(envPath)) {
+    return;
+  }
+
+  const content = fs.readFileSync(envPath, 'utf8');
+
+  for (const rawLine of content.split(/\r?\n/)) {
+    const line = rawLine.trim();
+
+    if (!line || line.startsWith('#')) {
+      continue;
+    }
+
+    const separatorIndex = line.indexOf('=');
+    if (separatorIndex <= 0) {
+      continue;
+    }
+
+    const key = line.slice(0, separatorIndex).trim();
+    if (!key || process.env[key] !== undefined) {
+      continue;
+    }
+
+    let value = line.slice(separatorIndex + 1).trim();
+
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+
+    process.env[key] = value;
+  }
+}
+
+loadEnvFromFile();
 
 const app = express();
 const PORT = process.env.PORT || 3737;
