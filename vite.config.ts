@@ -5,6 +5,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 
 const base = process.env.BASE_PATH || '/'
 const isPreview = process.env.IS_PREVIEW  ? true : false;
+const devPort = Number(process.env.VITE_PORT || 5173)
 // https://vite.dev/config/
 export default defineConfig({
   define: {
@@ -76,7 +77,7 @@ export default defineConfig({
     }
   },
   server: {
-    port: 3737,
+    port: devPort,
     host: '0.0.0.0',
   }
 })

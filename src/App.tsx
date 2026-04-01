@@ -1,5 +1,6 @@
 import { BrowserRouter } from 'react-router-dom'
 import { AppRoutes } from './router'
+import { WHATSAPP_SUPPORT_URL } from './services/registration'
 
 
 function App() {
@@ -8,7 +9,7 @@ function App() {
       <AppRoutes />
       {/* Botão flutuante do WhatsApp */}
       <a
-        href="https://wa.me/556198651825?text=Quero%20fazer%20a%20carteirinha%20de%20instrumentador%20da%20ANCI"
+        href={WHATSAPP_SUPPORT_URL}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Abrir conversa no WhatsApp"

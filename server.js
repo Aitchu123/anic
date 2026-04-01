@@ -3,12 +3,30 @@ import express from 'express';
 import cors from 'cors';
 import nodemailer from 'nodemailer';
 import path from 'path';
+import { loadEnvFile } from 'node:process';
 import { fileURLToPath } from 'url';
-import https from 'https'; // <- adicionado
+import {
+  CHECKOUT_STATUS,
+  CheckoutNotFoundError,
+  CheckoutStateError,
+  CheckoutValidationError,
+  createCheckoutService,
+} from './server/checkout/checkout-service.js';
+import { createInMemoryOrderRepository } from './server/checkout/order-repository.js';
+import { createTurboFyClient, TurboFyClientError } from './server/checkout/turbofy-client.js';
+
+loadEnvFile();
 
 const app = express();
 const PORT = process.env.PORT || 3737;
 const MAIL_TO = process.env.MAIL_TO || 'duvidas@anci.live';
+
+const checkoutRepository = createInMemoryOrderRepository();
+const turbofyClient = createTurboFyClient();
+const checkoutService = createCheckoutService({
+  repository: checkoutRepository,
+  turbofyClient,
+});
 
 // Middlewares
 app.use(cors());
@@ -74,6 +92,39 @@ function formatContatoBody(fields) {
   return lines.join('\n');
 }
 
+function formatCheckoutPaidBody(order) {
+  const lines = [
+    'Pagamento Pix confirmado para cadastro ANIC:',
+    `Pedido: ${order.publicId}`,
+    `Status: ${order.status}`,
+    `Valor: R$ ${(order.amountCents / 100).toFixed(2)}`,
+    `Charge TurboFy: ${order.provider?.chargeId || ''}`,
+    `External Ref: ${order.provider?.externalRef || ''}`,
+    `Pago em: ${order.paidAt || ''}`,
+    '',
+    formatCadastroBody(order.customer),
+  ];
+
+  return lines.join('\n');
+}
+
+async function notifyPaidOrderIfNeeded(order) {
+  if (order.status !== CHECKOUT_STATUS.PAID || order.notifications?.paidEmailSentAt) {
+    return;
+  }
+
+  try {
+    const text = formatCheckoutPaidBody(order);
+    await sendMail({
+      subject: 'Cadastro ANCI - Pagamento Pix confirmado',
+      text,
+    });
+    checkoutService.markPaidNotificationSent(order.publicId);
+  } catch (mailError) {
+    console.error('Erro ao notificar pagamento confirmado por e-mail:', mailError);
+  }
+}
+
 // API routes
 app.post('/api/form/cadastro', async (req, res) => {
   try {
@@ -96,6 +147,129 @@ app.post('/api/form/contato', async (req, res) => {
   } catch (err) {
     console.error('Erro ao enviar e-mail de contato:', err);
     return res.status(500).json({ ok: false, error: 'Falha ao enviar e-mail' });
+  }
+});
+
+app.post('/api/checkout/orders', async (req, res) => {
+  try {
+    const order = await checkoutService.createOrder(req.body);
+    await notifyPaidOrderIfNeeded(order);
+    return res.status(201).json(checkoutService.toPublicOrder(order));
+  } catch (err) {
+    if (err instanceof CheckoutValidationError) {
+      return res.status(400).json({
+        ok: false,
+        error: 'VALIDATION_ERROR',
+        details: err.details,
+      });
+    }
+
+    if (err instanceof TurboFyClientError && err.code === 'TURBOFY_CONFIG_ERROR') {
+      return res.status(503).json({
+        ok: false,
+        error: 'CHECKOUT_PROVIDER_CONFIG_ERROR',
+        message: 'Gateway de pagamento indisponível no momento.',
+      });
+    }
+
+    console.error('Erro ao criar pedido de checkout:', err);
+    return res.status(500).json({
+      ok: false,
+      error: 'CHECKOUT_CREATE_FAILED',
+      message: 'Não foi possível iniciar o cadastro profissional agora.',
+    });
+  }
+});
+
+async function handleRetryOrder(req, res) {
+  try {
+    const order = await checkoutService.retryOrder(req.params.orderId);
+    await notifyPaidOrderIfNeeded(order);
+    return res.status(200).json(checkoutService.toPublicOrder(order));
+  } catch (err) {
+    if (err instanceof CheckoutNotFoundError) {
+      return res.status(404).json({
+        ok: false,
+        error: 'ORDER_NOT_FOUND',
+      });
+    }
+
+    if (err instanceof CheckoutStateError) {
+      return res.status(409).json({
+        ok: false,
+        error: 'ORDER_RETRY_NOT_ALLOWED',
+        message: err.message,
+      });
+    }
+
+    console.error('Erro ao recriar Pix do pedido:', err);
+    return res.status(500).json({
+      ok: false,
+      error: 'CHECKOUT_RETRY_FAILED',
+    });
+  }
+}
+
+app.get('/api/checkout/orders/:orderId', (req, res) => {
+  try {
+    const order = checkoutService.getOrder(req.params.orderId);
+    return res.status(200).json(checkoutService.toPublicOrder(order));
+  } catch (err) {
+    if (err instanceof CheckoutNotFoundError) {
+      return res.status(404).json({
+        ok: false,
+        error: 'ORDER_NOT_FOUND',
+      });
+    }
+
+    console.error('Erro ao consultar pedido de checkout:', err);
+    return res.status(500).json({
+      ok: false,
+      error: 'CHECKOUT_GET_FAILED',
+    });
+  }
+});
+
+app.post('/api/checkout/orders/:orderId/retry', handleRetryOrder);
+app.post('/api/checkout/orders/:orderId/recheck', handleRetryOrder);
+
+app.post('/api/webhooks/turbofy', async (req, res) => {
+  try {
+    const result = checkoutService.applyWebhook(req.body);
+
+    if (!result.ok && result.reason === 'INVALID_PAYLOAD') {
+      return res.status(400).json({
+        ok: false,
+        error: 'INVALID_WEBHOOK_PAYLOAD',
+      });
+    }
+
+    if (!result.ok && result.reason === 'ORDER_NOT_FOUND') {
+      return res.status(202).json({
+        ok: true,
+        applied: false,
+        reason: 'ORDER_NOT_FOUND',
+      });
+    }
+
+    const order = result.order;
+
+    if (result.transitioned) {
+      await notifyPaidOrderIfNeeded(order);
+    }
+
+    return res.status(200).json({
+      ok: true,
+      applied: result.applied,
+      transitioned: result.transitioned,
+      targetStatus: result.targetStatus,
+    });
+  } catch (err) {
+    console.error('Erro ao processar webhook TurboFy:', err);
+    return res.status(500).json({
+      ok: false,
+      error: 'WEBHOOK_PROCESSING_FAILED',
+    });
   }
 });
 

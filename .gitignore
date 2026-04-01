@@ -6,3 +6,9 @@ dist/
 # Misc
 .DS_Store
 Thumbs.db
+
+*.tsbuildinfo
+server-runtime.log
+vite-runtime.log
+
+.env

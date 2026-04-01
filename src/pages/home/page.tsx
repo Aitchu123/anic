@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
+import ProfessionalRegistrationFlow from '../../components/registration/ProfessionalRegistrationFlow';
+import { getApiBaseUrl } from '../../services/registration';
 
 // Hook personalizado para animação de contadores
 const useCountUp = (end: number, duration: number = 2000, start: number = 0) => {
@@ -84,9 +86,7 @@ export default function Home() {
   }, [activeTab]);
 
   // Base da API para ambiente local: se estiver em localhost e não na porta 3737, direciona para o backend
-  const apiBase = (typeof window !== 'undefined' &&
-    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') &&
-    window.location.port !== '3737') ? 'http://localhost:3737' : '';
+  const apiBase = getApiBaseUrl();
 
   const handleContatoSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -112,7 +112,7 @@ export default function Home() {
       } else {
         alert('Erro ao enviar mensagem. Tente novamente.');
       }
-    } catch (_error) {
+    } catch {
       alert('Erro ao enviar mensagem. Verifique sua conexão e tente novamente.');
     }
   };
@@ -600,29 +600,7 @@ export default function Home() {
         {/* Cadastro */}
         {activeTab === 'cadastro' && (
           <section className="space-y-12">
-            <div className="text-center">
-              <h2 className="text-4xl font-bold text-gray-800 mb-6">Cadastro pelo WhatsApp</h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">Para realizar seu cadastro, fale conosco diretamente pelo WhatsApp.</p>
-            </div>
-
-            <div className="max-w-2xl mx-auto">
-              <div className="bg-white p-8 rounded-xl shadow-lg text-center">
-                <p className="text-lg text-gray-700">Para realizar seu cadastro, entre em contato pelo WhatsApp.</p>
-                <div className="mt-6">
-                  <a
-                    href="https://wa.me/556198651825?text=Quero%20fazer%20a%20carteirinha%20de%20instrumentador%20da%20ANCI"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center px-6 py-4 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-md"
-                    aria-label="Entrar em contato pelo WhatsApp"
-                  >
-                    <i className="ri-whatsapp-line text-2xl mr-2"></i>
-                    Falar no WhatsApp
-                  </a>
-                </div>
-                <p className="text-sm text-gray-500 mt-4">Atendimento em horário comercial.</p>
-              </div>
-            </div>
+            <ProfessionalRegistrationFlow presentation="embedded" />
           </section>
         )}
 

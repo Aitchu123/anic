@@ -24,6 +24,7 @@ ENV NODE_ENV=production
 # Copy only what's needed to run the server
 COPY --from=build /app/package.json /app/package.json
 COPY --from=build /app/server.js /app/server.js
+COPY --from=build /app/server /app/server
 COPY --from=build /app/out /app/out
 COPY --from=build /app/node_modules /app/node_modules
 
