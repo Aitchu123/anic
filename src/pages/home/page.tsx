@@ -303,9 +303,15 @@ export default function Home() {
                     <div className="space-y-4 transform hover:scale-105 transition-transform duration-500">
                       <div className="bg-gradient-to-br from-gray-100 to-gray-200 p-2 rounded-xl shadow-inner">
                         <img 
-                          src="https://lh3.googleusercontent.com/u/0/d/1qte0bDRz_g20Hp_14f3nnL9jeBy42niG=w1000" 
+                          src="https://lh3.googleusercontent.com/d/1qte0bDRz_g20Hp_14f3nnL9jeBy42niG" 
                           alt="Frente da Carteirinha ANCI" 
                           className="w-full h-auto rounded-lg shadow-2xl"
+                          onError={(e) => {
+                            const img = e.target as HTMLImageElement;
+                            if (!img.src.includes('uc?export=view')) {
+                              img.src = 'https://drive.google.com/uc?export=view&id=1qte0bDRz_g20Hp_14f3nnL9jeBy42niG';
+                            }
+                          }}
                         />
                       </div>
                       <p className="text-sm font-semibold text-blue-600 uppercase tracking-wider">Frente do Documento</p>
@@ -314,9 +320,15 @@ export default function Home() {
                     <div className="space-y-4 transform hover:scale-105 transition-transform duration-500">
                       <div className="bg-gradient-to-br from-gray-100 to-gray-200 p-2 rounded-xl shadow-inner">
                         <img 
-                          src="https://lh3.googleusercontent.com/u/0/d/1QZvn5IOwG7EPUkHy-bRW3QGruhqZPUQI=w1000" 
+                          src="https://lh3.googleusercontent.com/d/1QZvn5IOwG7EPUkHy-bRW3QGruhqZPUQI" 
                           alt="Verso da Carteirinha ANCI" 
                           className="w-full h-auto rounded-lg shadow-2xl"
+                          onError={(e) => {
+                            const img = e.target as HTMLImageElement;
+                            if (!img.src.includes('uc?export=view')) {
+                              img.src = 'https://drive.google.com/uc?export=view&id=1QZvn5IOwG7EPUkHy-bRW3QGruhqZPUQI';
+                            }
+                          }}
                         />
                       </div>
                       <p className="text-sm font-semibold text-blue-600 uppercase tracking-wider">Verso do Documento</p>
@@ -326,7 +338,7 @@ export default function Home() {
                   <div className="mt-10 p-4 bg-blue-50 rounded-xl border border-blue-100 inline-block">
                     <p className="text-blue-800 text-sm flex items-center justify-center">
                       <i className="ri-shield-check-line mr-2 text-xl"></i>
-                      Documento oficial plastificado com numeração única nacional e validação digital via QR Code.
+                      Documento oficial produzido em PVC (mesmo material de cartões de crédito) com numeração única nacional e validação digital via QR Code.
                     </p>
                   </div>
                 </div>
